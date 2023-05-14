@@ -1,19 +1,26 @@
 using Assets.Scripts;
 using UnityEngine;
 
+[RequireComponent(typeof(MazeSettings))]
 public class MazeBuilder : MonoBehaviour
 {
     [SerializeField]
     private GameObject puzzleUnit;
 
-    private const int width = 20;
-    private const int depth = 20;
+    private MazeSettings mazeSettings;
+
     private const int unitScale = 3;
+
+
+    public void Awake()
+    {
+        mazeSettings = GetComponent<MazeSettings>();
+    }
 
     public void Generate()
     {
         IGenerator primsMaze = new PrimsMaze();
-        BuildMaze(primsMaze.GenerateMaze(width, depth));
+        BuildMaze(primsMaze.GenerateMaze(mazeSettings.Width, mazeSettings.Depth));
     }
 
     private void BuildMaze(bool[,] mazedata) {
