@@ -2,6 +2,6 @@
 {
     internal interface IGenerator
     {
-        void Generate();
+        bool[,] GenerateMaze(int width, int depth);
     }
 }
