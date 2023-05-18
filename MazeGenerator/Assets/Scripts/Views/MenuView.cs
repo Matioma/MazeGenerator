@@ -46,5 +46,8 @@ public class MenuView : MonoBehaviour
             LayoutRebuilder.MarkLayoutForRebuild(layoutGroup);
             yield return null;
         }
+
+        _menuRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, targetWidth);
+        LayoutRebuilder.MarkLayoutForRebuild(layoutGroup);
     }
 }
