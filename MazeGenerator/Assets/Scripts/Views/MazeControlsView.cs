@@ -34,15 +34,15 @@ public class MazeControlsView : MonoBehaviour
         _mazeSettings.onDepthChange.AddListener(InitializeDepthControls);
 
         _widthSlider.onValueChanged.AddListener(UpdateWidth);
-        _widthInput.onValueChanged.AddListener(handleWidthInput);
+        _widthInput.onValueChanged.AddListener(HandleWidthInput);
 
 
         _depthSlider.onValueChanged.AddListener(UpdateDepth);
-        _depthInput.onValueChanged.AddListener(handleDepthInput);
+        _depthInput.onValueChanged.AddListener(HandleDepthInput);
     }
 
 
-    private void handleWidthInput(string input) {
+    private void HandleWidthInput(string input) {
         int inputValue;
         bool succesfullyParsed = int.TryParse(input, out inputValue);
         if(succesfullyParsed)
@@ -55,7 +55,7 @@ public class MazeControlsView : MonoBehaviour
         }
     }
 
-    private void handleDepthInput(string input)
+    private void HandleDepthInput(string input)
     {
         int inputValue;
         bool succesfullyParsed = int.TryParse(input, out inputValue);
