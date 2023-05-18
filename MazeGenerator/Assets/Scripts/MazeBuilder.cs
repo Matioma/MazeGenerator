@@ -1,30 +1,40 @@
 using Assets.Scripts;
+using Newtonsoft.Json.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(MazeSettings))]
 public class MazeBuilder : MonoBehaviour
 {
     [SerializeField]
-    private GameObject puzzleUnit;
+    private GameObject _puzzleUnit;
 
-    private MazeSettings mazeSettings;
+    private MazeSettings _mazeSettings;
 
-    private const int unitScale = 3;
+    public UnityEvent<MazeSettings> mazeCreated;
 
 
     public void Awake()
     {
-        mazeSettings = GetComponent<MazeSettings>();
+        _mazeSettings = GetComponent<MazeSettings>();
     }
 
     public void Generate()
     {
         IGenerator primsMaze = new PrimsMaze();
-        BuildMaze(primsMaze.GenerateMaze(mazeSettings.Width, mazeSettings.Depth));
+        BuildMaze(primsMaze.GenerateMaze(_mazeSettings.Width, _mazeSettings.Depth));
+        mazeCreated.Invoke(_mazeSettings);
     }
 
     private void BuildMaze(bool[,] mazedata) {
        DestoryMaze();
+        float mazeStartX = -_mazeSettings.Width / 2 * _mazeSettings.BlockScale;
+        float mazeStartz = -_mazeSettings.Depth / 2 * _mazeSettings.BlockScale;
+        Vector3 mazeStartPoint = transform.position + new Vector3(mazeStartX, 0, mazeStartz);
+
+
+
        for (var x = 0; x < mazedata.GetLength(0); x++)
         {
             for (var z = 0; z < mazedata.GetLength(1); z++) {
@@ -34,9 +44,9 @@ public class MazeBuilder : MonoBehaviour
                     continue;
                 }
 
-                Vector3 position = new Vector3(x * unitScale, 0, z * unitScale);
-                Vector3 scale = new Vector3(unitScale, unitScale, unitScale);
-                GameObject createdPuzzleUnit = Instantiate(puzzleUnit, position, Quaternion.identity, transform);
+                Vector3 blockOffset = new Vector3(x * _mazeSettings.BlockScale, 0, z * _mazeSettings.BlockScale);
+                Vector3 scale = new Vector3(_mazeSettings.BlockScale, _mazeSettings.BlockScale, _mazeSettings.BlockScale);
+                GameObject createdPuzzleUnit = Instantiate(_puzzleUnit, mazeStartPoint + blockOffset, Quaternion.identity, transform);
                 createdPuzzleUnit.transform.localScale = scale;
             }
         }
@@ -47,5 +57,10 @@ public class MazeBuilder : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+    }
+
+    private void OnDestroy()
+    {
+        mazeCreated.RemoveAllListeners();
     }
 }

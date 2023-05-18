@@ -13,6 +13,8 @@ namespace Assets.Scripts
         [SerializeField]
         private int _depth;
 
+        [SerializeField]
+        private int _blockScale = 3;
 
         public int Width {
             get { return _width; } 
@@ -29,6 +31,15 @@ namespace Assets.Scripts
             {
                 _depth = value;
                 onDepthChange.Invoke(value);
+            }
+        }
+
+        public int BlockScale
+        {
+            get { return _blockScale; }
+            set
+            {
+                _blockScale = value;
             }
         }
 
