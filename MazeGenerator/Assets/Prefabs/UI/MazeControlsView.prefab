@@ -391,7 +391,7 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 0
+    m_Top: 62
     m_Bottom: 0
   m_ChildAlignment: 1
   m_Spacing: 10
@@ -414,9 +414,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70c6ffd34fd290646a2533c65c2695ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mazeSettings: {fileID: 0}
-  widthSlider: {fileID: 3644142468296680740}
-  depthSlider: {fileID: 106301077711261248}
+  _mazeSettings: {fileID: 0}
+  _widthSlider: {fileID: 3644142468296680740}
+  _depthSlider: {fileID: 106301077711261248}
 --- !u!1001 &757650357951701685
 PrefabInstance:
   m_ObjectHideFlags: 0
