@@ -25,7 +25,7 @@ namespace Assets.Scripts
         public int Width {
             get { return _width; } 
             set {
-                if (value < MIN_DIMENSION && value > MAX_DIMENSION) {
+                if (value < MIN_DIMENSION || value > MAX_DIMENSION) {
                     return;
                 }
                 _width = value;
@@ -38,7 +38,7 @@ namespace Assets.Scripts
             get { return _depth; }
             set
             {
-                if (value < MIN_DIMENSION && value > MAX_DIMENSION)
+                if (value < MIN_DIMENSION || value > MAX_DIMENSION)
                 {
                     return;
                 }
