@@ -22,6 +22,8 @@ namespace Assets.Scripts
         [SerializeField]
         private int _blockScale = 3;
 
+        public bool animate = false;
+
         public int Width {
             get { return _width; } 
             set {
@@ -32,7 +34,6 @@ namespace Assets.Scripts
                 onWidthChange.Invoke(value);
             }
         }
-
         public int Depth
         {
             get { return _depth; }
@@ -46,7 +47,6 @@ namespace Assets.Scripts
                 onDepthChange.Invoke(value);
             }
         }
-
         public int BlockScale
         {
             get { return _blockScale; }

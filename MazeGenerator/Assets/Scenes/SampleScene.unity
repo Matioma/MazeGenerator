@@ -453,6 +453,7 @@ MonoBehaviour:
   _width: 10
   _depth: 10
   _blockScale: 3
+  animate: 1
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1036,6 +1037,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3644142468364700742, guid: 5f2eaa8a60c5ec9479f49d147caa658c, type: 3}
       propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074894811568243428, guid: 5f2eaa8a60c5ec9479f49d147caa658c, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074894811568243428, guid: 5f2eaa8a60c5ec9479f49d147caa658c, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074894811568243428, guid: 5f2eaa8a60c5ec9479f49d147caa658c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074894811568243428, guid: 5f2eaa8a60c5ec9479f49d147caa658c, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5257009977010681239, guid: 5f2eaa8a60c5ec9479f49d147caa658c, type: 3}
