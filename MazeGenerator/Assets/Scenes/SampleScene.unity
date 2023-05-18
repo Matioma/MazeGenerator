@@ -450,8 +450,8 @@ MonoBehaviour:
   onDepthChange:
     m_PersistentCalls:
       m_Calls: []
-  _width: 0
-  _depth: 0
+  _width: 10
+  _depth: 10
   _blockScale: 3
 --- !u!1 &963194225
 GameObject:
@@ -551,6 +551,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mazeSettings: {fileID: 0}
+  transitionTime: 1.5
 --- !u!224 &1359941027 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3644142467539175772, guid: 5f2eaa8a60c5ec9479f49d147caa658c, type: 3}

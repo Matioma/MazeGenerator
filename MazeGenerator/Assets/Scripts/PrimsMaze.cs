@@ -61,7 +61,6 @@ namespace Assets.Scripts
 
             if (maze[rightWallAddress.x, rightWallAddress.y] == false)
             {
-
                 newWalls.Add(rightWallAddress);
             }
             if (maze[leftWallAddress.x, leftWallAddress.y] == false)
