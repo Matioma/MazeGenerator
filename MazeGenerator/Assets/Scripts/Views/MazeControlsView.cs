@@ -19,22 +19,26 @@ public class MazeControlsView : MonoBehaviour
             _mazeSettings = FindObjectOfType<MazeSettings>();
         }
 
-        DisplayMazeWidth(_mazeSettings.Width);
-        DisplayMazeDepth(_mazeSettings.Depth);
+        InitializeWidthControls(_mazeSettings.Width);
+        InitializeDepthControls(_mazeSettings.Depth);
 
-        _mazeSettings.onWidthChange.AddListener(DisplayMazeWidth);
-        _mazeSettings.onDepthChange.AddListener(DisplayMazeDepth);
+        _mazeSettings.onWidthChange.AddListener(InitializeWidthControls);
+        _mazeSettings.onDepthChange.AddListener(InitializeDepthControls);
 
         _widthSlider.onValueChanged.AddListener(UpdateWidth);
         _depthSlider.onValueChanged.AddListener(UpdateDepth);
     }
 
-    private void DisplayMazeWidth(int width) { 
+    private void InitializeWidthControls(int width) { 
         _widthSlider.value = width;
+        _widthSlider.minValue = MazeSettings.MIN_DIMENSION;
+        _widthSlider.maxValue = MazeSettings.MAX_DIMENSION;
     }
-    private void DisplayMazeDepth(int depth)
+    private void InitializeDepthControls(int depth)
     {
         _depthSlider.value = depth;
+        _depthSlider.minValue = MazeSettings.MIN_DIMENSION;
+        _depthSlider.maxValue = MazeSettings.MAX_DIMENSION;
     }
 
     private void UpdateWidth(float newValue)
