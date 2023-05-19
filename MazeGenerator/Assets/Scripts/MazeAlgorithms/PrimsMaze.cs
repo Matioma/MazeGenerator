@@ -8,6 +8,7 @@ namespace Assets.Scripts
     {
         private List<Vector2Int> _walls = new List<Vector2Int>();
         private List<bool[,]> _animationSteps = new List<bool[,]>();
+        private List<Vector2Int> _animationStepsDelta = new List<Vector2Int>();
 
         public bool[,] GenerateMaze(int width, int depth)
         {
@@ -20,6 +21,13 @@ namespace Assets.Scripts
             return _animationSteps;
         }
 
+        public List<Vector2Int> GenerateMazeStepsDelta(int width, int depth)
+        {
+            GenerateMaze(width, depth, true);
+            return _animationStepsDelta;
+        }
+
+
         private bool[,] GenerateMaze(int width, int depth, bool storeSteps)
         {
             var maze = new bool[width, depth];
@@ -31,7 +39,9 @@ namespace Assets.Scripts
 
 
             maze[startCell.x, startCell.y] = true;
-            
+            _animationStepsDelta.Add(new Vector2Int(startCell.x, startCell.y));
+
+
             _walls.AddRange(GetWalls(maze, startCell));
 
             while (_walls.Count > 0)
@@ -43,6 +53,13 @@ namespace Assets.Scripts
                 if (wallsOfNewlySelectedCell.Count >= 3)
                 {
                     maze[wall.x, wall.y] = true;
+
+                    if (storeSteps)
+                    {
+                        _animationStepsDelta.Add(new Vector2Int(wall.x, wall.y));
+                        _animationSteps.Add((bool[,])maze.Clone());
+                    }
+
                     _walls.AddRange(GetWalls(maze, wall));
                     _walls.Remove(wall);
                 }

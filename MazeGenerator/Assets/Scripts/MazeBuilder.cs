@@ -32,9 +32,11 @@ public class MazeBuilder : MonoBehaviour
         else
         {
             IGeneratorAnimation generatorAnimation = primsMaze;
-            var mazeSteps = generatorAnimation.GenerateMazeSteps(_mazeSettings.Width, _mazeSettings.Depth);
+            //var mazeSteps = generatorAnimation.GenerateMazeSteps(_mazeSettings.Width, _mazeSettings.Depth);
+            var mazeStepsDelta  = generatorAnimation.GenerateMazeStepsDelta(_mazeSettings.Width, _mazeSettings.Depth);
+            StartCoroutine(DisplayMazeAnimationUsingDelta(mazeStepsDelta));
             //DisplayMazeAnimation(mazeSteps);
-            StartCoroutine(DisplayMazeAnimation(mazeSteps));
+            //StartCoroutine(DisplayMazeAnimation(mazeSteps));
         }
 
         mazeCreated.Invoke(_mazeSettings);
@@ -62,27 +64,84 @@ public class MazeBuilder : MonoBehaviour
         }
 
         // Build Animation Frame
-        foreach(var mazeFrame in mazeAnimationSteps) { 
-            for (var x = 0; x < mazeFrame.GetLength(0); x++)
+        for ( var i=0; i< mazeAnimationSteps.Count; i++)
+        {
+            for (var x = 0; x < mazeAnimationSteps[i].GetLength(0); x++)
             {
-                for (var z = 0; z < mazeFrame.GetLength(1); z++)
+                for (var z = 0; z < mazeAnimationSteps[i].GetLength(1); z++)
                 {
                     Vector3 blockOffset = new Vector3(x * _mazeSettings.BlockScale, 0, z * _mazeSettings.BlockScale);
                     objectPool[x, z].transform.position = mazeStartLocation + blockOffset;
-                    if (mazeFrame[x, z])
+                    if (mazeAnimationSteps[i][x, z])
                     {
                         objectPool[x, z].SetActive(false);
-                    }
-                    else
+                    } else if (i == 0)
                     {
                         objectPool[x, z].SetActive(true);
                     }
-                    
+
                 }
             }
             yield return new WaitForSeconds(0.001f);
+
+        }
+        foreach(var mazeFrame in mazeAnimationSteps) { 
+            
         }
     }
+
+
+    private IEnumerator DisplayMazeAnimationUsingDelta(List<Vector2Int> mazeAnimationSteps)
+    {
+        DestoryMaze();
+        var mazeStartLocation = GetMazeStartLocation();
+
+        //var firstAnimationFrame = mazeAnimationSteps[0];
+
+
+        //CreateObjectPool to avoid to much deletion/creation
+        GameObject[,] objectPool = new GameObject[_mazeSettings.Width, _mazeSettings.Depth];
+        for (var x = 0; x < objectPool.GetLength(0); x++)
+        {
+            for (var z = 0; z < objectPool.GetLength(1); z++)
+            {
+                GameObject createdPuzzleUnit = Instantiate(_puzzleUnit, Vector3.zero, Quaternion.identity, transform);
+                createdPuzzleUnit.transform.localScale = new Vector3(_mazeSettings.BlockScale, _mazeSettings.BlockScale, _mazeSettings.BlockScale);
+                Vector3 blockOffset = new Vector3(x * _mazeSettings.BlockScale, 0, z * _mazeSettings.BlockScale);
+                createdPuzzleUnit.transform.position = mazeStartLocation + blockOffset;
+                objectPool[x, z] = createdPuzzleUnit;
+            }
+        }
+
+        Debug.Log(mazeAnimationSteps.Count);
+        // Build Animation Frame
+        for (var i = 0; i < mazeAnimationSteps.Count; i++)
+        {
+            var position = mazeAnimationSteps[i];
+
+            objectPool[position.x, position.y].SetActive(false);
+            //for (var x = 0; x < mazeAnimationSteps[i].GetLength(0); x++)
+            //{
+            //    for (var z = 0; z < mazeAnimationSteps[i].GetLength(1); z++)
+            //    {
+            //        Vector3 blockOffset = new Vector3(x * _mazeSettings.BlockScale, 0, z * _mazeSettings.BlockScale);
+            //        objectPool[x, z].transform.position = mazeStartLocation + blockOffset;
+            //        if (mazeAnimationSteps[i][x, z])
+            //        {
+            //            objectPool[x, z].SetActive(false);
+            //        }
+            //        else if (i == 0)
+            //        {
+            //            objectPool[x, z].SetActive(true);
+            //        }
+
+            //    }
+            //}
+            yield return new WaitForSeconds(0.001f);
+
+        }
+    }
+
 
     private Vector3 GetMazeStartLocation()
     {
