@@ -8,6 +8,7 @@ namespace Assets.Scripts
     {
         private List<Vector2Int> _walls = new List<Vector2Int>();
         private List<Vector2Int> _animationStepsDelta = new List<Vector2Int>();
+        private Dictionary<Vector2Int, Vector2Int[]> _animzationStepWithWalls = new Dictionary<Vector2Int, Vector2Int[]>();
 
         public bool[,] GenerateMaze(int width, int depth)
         {
@@ -18,6 +19,12 @@ namespace Assets.Scripts
         {
             GenerateMaze(width, depth, true);
             return _animationStepsDelta;
+        }
+
+        public Dictionary<Vector2Int, Vector2Int[]> GenerateMazeStepsWalls(int width, int depth)
+        {
+            GenerateMaze(width, depth, true);
+            return _animzationStepWithWalls;
         }
 
 
@@ -34,8 +41,8 @@ namespace Assets.Scripts
             maze[startCell.x, startCell.y] = true;
             _animationStepsDelta.Add(new Vector2Int(startCell.x, startCell.y));
 
-
             _walls.AddRange(GetWalls(maze, startCell));
+            _animzationStepWithWalls.Add(startCell, _walls.ToArray());
 
             while (_walls.Count > 0)
             {
@@ -47,13 +54,15 @@ namespace Assets.Scripts
                 {
                     maze[wall.x, wall.y] = true;
 
-                    if (storeSteps)
-                    {
-                        _animationStepsDelta.Add(new Vector2Int(wall.x, wall.y));
-                    }
 
                     _walls.AddRange(GetWalls(maze, wall));
                     _walls.Remove(wall);
+
+                    if (storeSteps)
+                    {
+                        _animationStepsDelta.Add(new Vector2Int(wall.x, wall.y));
+                        _animzationStepWithWalls.Add(new Vector2Int(wall.x, wall.y), _walls.ToArray());
+                    }
                 }
                 else
                 {

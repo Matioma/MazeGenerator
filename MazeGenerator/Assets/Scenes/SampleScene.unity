@@ -453,7 +453,7 @@ MonoBehaviour:
   _width: 10
   _depth: 10
   _blockScale: 3
-  animate: 0
+  animate: 1
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
