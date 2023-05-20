@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 public class MazeBuilder : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _puzzleUnit;
+    private GameObject _mazeUnit;
 
     private MazeSettings _mazeSettings;
 
@@ -34,11 +34,9 @@ public class MazeBuilder : MonoBehaviour
         }
         else
         {
-            IGeneratorAnimation generatorAnimation = primsMaze;
-            var mazeWalls = generatorAnimation.GenerateMazeStepsWalls(_mazeSettings.Width, _mazeSettings.Depth);
-            StartCoroutine(DisplayMazeAnimationUsingWallsAddition(mazeWalls));
-            //var mazeStepsDelta  = generatorAnimation.GenerateMazeStepsDelta(_mazeSettings.Width, _mazeSettings.Depth);
-            //StartCoroutine(DisplayMazeAnimationUsingDelta(mazeStepsDelta));
+            IAnimationedGeneration generatorAnimation = primsMaze;
+            var mazeWalls = generatorAnimation.GetMazeAnimation(_mazeSettings);
+            StartCoroutine(DisplayAnimaitionFrame(mazeWalls));
         }
 
         mazeCreated.Invoke(_mazeSettings);
@@ -53,7 +51,7 @@ public class MazeBuilder : MonoBehaviour
             {
                 var scale = new Vector3(_mazeSettings.BlockScale, _mazeSettings.BlockScale, _mazeSettings.BlockScale);
 
-                GameObject createdPuzzleUnit = Instantiate(_puzzleUnit,Vector3.zero, Quaternion.identity, transform);
+                GameObject createdPuzzleUnit = Instantiate(_mazeUnit,Vector3.zero, Quaternion.identity, transform);
                 createdPuzzleUnit.transform.localScale = scale;
                 createdPuzzleUnit.SetActive(false);
                 puzzleUnitCache[x, z] = createdPuzzleUnit;
@@ -61,36 +59,7 @@ public class MazeBuilder : MonoBehaviour
         }
     }
 
-    private IEnumerator DisplayMazeAnimationUsingDelta(List<Vector2Int> mazeAnimationSteps)
-    {
-        HideCache();
-        var mazeStartLocation = GetMazeStartLocation();
-
-        for (var x = 0; x < _mazeSettings.Width; x++)
-        {
-            for (var z = 0; z < _mazeSettings.Depth; z++)
-            {
-                var blockOffset = new Vector3(x * _mazeSettings.BlockScale, 0, z * _mazeSettings.BlockScale);
-                puzzleUnitCache[x, z].transform.position = mazeStartLocation+ blockOffset;
-                puzzleUnitCache[x, z].SetActive(true);
-            }
-        }
-
-        //Display Animation Frames
-        for (var i = 0; i < mazeAnimationSteps.Count; i++)
-        {
-            var position = mazeAnimationSteps[i];
-            puzzleUnitCache[position.x, position.y].SetActive(false);
-
-            if (i % 300 == 0)
-            {
-                yield return new WaitForSeconds(0.1f);
-
-            }
-        }
-    }
-
-    private IEnumerator DisplayMazeAnimationUsingWallsAddition(Dictionary<Vector2Int, Vector2Int[]> mazeAnimationFrames)
+    private IEnumerator DisplayAnimaitionFrame(List<AnimationFrame> mazeAnimationFrames)
     {
         HideCache();
         var indexOffset = new Vector2Int((MazeSettings.MAX_DIMENSION-_mazeSettings.Width)/2, (MazeSettings.MAX_DIMENSION - _mazeSettings.Depth) / 2);
@@ -100,43 +69,23 @@ public class MazeBuilder : MonoBehaviour
         foreach (var frame in mazeAnimationFrames)
         {
             frameCounter++;
+
             foreach (var wall in frame.Value) {
                 var blockOffset = new Vector3(wall.x * _mazeSettings.BlockScale, 0, wall.y * _mazeSettings.BlockScale);
                 puzzleUnitCache[indexOffset.x + wall.x, indexOffset.y + wall.y].SetActive(true);
                 puzzleUnitCache[indexOffset.x + wall.x, indexOffset.y + wall.y].transform.position = mazeStartLocation + blockOffset;
             }
 
-            puzzleUnitCache[indexOffset.x + frame.Key.x, indexOffset.y + frame.Key.y].SetActive(false);
-            if (frameCounter % 50 == 0)
+
+            if (frame.Key is Vector2Int cell) {
+                puzzleUnitCache[indexOffset.x + cell.x, indexOffset.y + cell.y].SetActive(false);
+            }
+
+            if (frameCounter % 100 == 0)
             {
                 yield return new WaitForSeconds(0.1f);
-
             }
         }
-
-        //var mazeStartLocation = GetMazeStartLocation();
-
-        //for (var x = 0; x < _mazeSettings.Width; x++)
-        //{
-        //    for (var z = 0; z < _mazeSettings.Depth; z++)
-        //    {
-        //        var blockOffset = new Vector3(x * _mazeSettings.BlockScale, 0, z * _mazeSettings.BlockScale);
-        //        puzzleUnitCache[x, z].transform.position = mazeStartLocation + blockOffset;
-        //        puzzleUnitCache[x, z].SetActive(true);
-        //    }
-        //}
-
-        ////Display Animation Frames
-        //for (var i = 0; i < mazeAnimationSteps.Count; i++)
-        //{
-        //    var position = mazeAnimationSteps[i];
-        //    puzzleUnitCache[position.x, position.y].SetActive(false);
-
-        //    if (i % 300 == 0)
-        //    {
-
-        //    }
-        //}
     }
 
     private Vector3 GetMazeStartLocation()
@@ -170,7 +119,6 @@ public class MazeBuilder : MonoBehaviour
         foreach (var puzzleItem in puzzleUnitCache) {
             puzzleItem.SetActive(false);
         }
-
     }
 
     private void OnDestroy()

@@ -4,11 +4,11 @@ using Random = UnityEngine.Random;
 
 namespace Assets.Scripts
 {
-    internal class PrimsMaze: IGenerator, IGeneratorAnimation
+    internal class PrimsMaze: IGenerator, IAnimationedGeneration
     {
         private List<Vector2Int> _walls = new List<Vector2Int>();
         private List<Vector2Int> _animationStepsDelta = new List<Vector2Int>();
-        private Dictionary<Vector2Int, Vector2Int[]> _animzationStepWithWalls = new Dictionary<Vector2Int, Vector2Int[]>();
+        private List<KeyValuePair<Vector2Int?, Vector2Int[]>> _animzationStepWithWalls = new List<KeyValuePair<Vector2Int?, Vector2Int[]>>();
 
         public bool[,] GenerateMaze(int width, int depth)
         {
@@ -21,10 +21,72 @@ namespace Assets.Scripts
             return _animationStepsDelta;
         }
 
-        public Dictionary<Vector2Int, Vector2Int[]> GenerateMazeStepsWalls(int width, int depth)
+        public List<KeyValuePair<Vector2Int?, Vector2Int[]>> GenerateMazeStepsWalls(int width, int depth)
         {
             GenerateMaze(width, depth, true);
             return _animzationStepWithWalls;
+        }
+
+        public List<AnimationFrame> GetMazeAnimation(MazeSettings mazeSettings)
+        {
+            return GenerateMaze(mazeSettings);
+        }
+
+        private List<AnimationFrame> GenerateMaze(MazeSettings mazeSettings)
+        {
+            var maze = new bool[mazeSettings.Width, mazeSettings.Depth];
+            List<AnimationFrame>  animationFrames = new List<AnimationFrame>();
+
+
+            //Pick start Cell
+            int x = Random.Range(1, maze.GetLength(0) - 1);
+            int z = Random.Range(1, maze.GetLength(1) - 1);
+            Vector2Int startCell = new Vector2Int(x, z);
+
+
+            maze[startCell.x, startCell.y] = true;
+
+            _walls.AddRange(GetWalls(maze, startCell));
+
+            animationFrames.Add(new AnimationFrame(startCell, _walls.ToArray()));
+
+
+            while (_walls.Count > 0)
+            {
+                var randomWallIndex = Random.Range(0, _walls.Count);
+                var wall = _walls[randomWallIndex];
+
+                var wallsOfNewlySelectedCell = GetWalls(maze, wall);
+                if (wallsOfNewlySelectedCell.Count >= 3)
+                {
+                    maze[wall.x, wall.y] = true;
+
+
+                    _walls.AddRange(GetWalls(maze, wall));
+                    _walls.Remove(wall);
+
+                    animationFrames.Add(new AnimationFrame(new Vector2Int(wall.x, wall.y), _walls.ToArray()));
+                }
+                else
+                {
+                    _walls.Remove(wall);
+                }
+            }
+
+            List<Vector2Int> lastWalls = new List<Vector2Int>();
+            for (var xIndex = 0; xIndex < maze.GetLength(0); xIndex++)
+            {
+                for (var yIndex = 0; yIndex < maze.GetLength(1); yIndex++)
+                {
+                    if (!maze[xIndex, yIndex])
+                    {
+                        lastWalls.Add(new Vector2Int(xIndex, yIndex));
+                    }
+                }
+            }
+            animationFrames.Add(new AnimationFrame(startCell, lastWalls.ToArray()));
+
+            return animationFrames;
         }
 
 
@@ -42,7 +104,7 @@ namespace Assets.Scripts
             _animationStepsDelta.Add(new Vector2Int(startCell.x, startCell.y));
 
             _walls.AddRange(GetWalls(maze, startCell));
-            _animzationStepWithWalls.Add(startCell, _walls.ToArray());
+            _animzationStepWithWalls.Add(new KeyValuePair<Vector2Int?, Vector2Int[]>(startCell, _walls.ToArray()));
 
             while (_walls.Count > 0)
             {
@@ -61,7 +123,7 @@ namespace Assets.Scripts
                     if (storeSteps)
                     {
                         _animationStepsDelta.Add(new Vector2Int(wall.x, wall.y));
-                        _animzationStepWithWalls.Add(new Vector2Int(wall.x, wall.y), _walls.ToArray());
+                        _animzationStepWithWalls.Add(new KeyValuePair<Vector2Int?, Vector2Int[]>(new Vector2Int(wall.x, wall.y), _walls.ToArray()));
                     }
                 }
                 else
@@ -69,6 +131,24 @@ namespace Assets.Scripts
                     _walls.Remove(wall);
                 }
             }
+
+            if (storeSteps)
+            {
+                List<Vector2Int> lastWalls = new List<Vector2Int>();
+                for (var xIndex = 0; xIndex < maze.GetLength(0); xIndex++)
+                {
+                    for (var yIndex = 0; yIndex < maze.GetLength(1); yIndex++)
+                    {
+                        if (!maze[xIndex, yIndex])
+                        {
+                            lastWalls.Add(new Vector2Int(xIndex, yIndex));
+                        }
+                    }
+                }
+
+                _animzationStepWithWalls.Add(new KeyValuePair<Vector2Int?, Vector2Int[]>(startCell, lastWalls.ToArray()));
+            }
+
             return maze;
         }
 
@@ -110,6 +190,5 @@ namespace Assets.Scripts
             }
             return newWalls;
         }
-
     }
 }
