@@ -7,18 +7,11 @@ namespace Assets.Scripts
     internal class PrimsMaze: IGenerator, IGeneratorAnimation
     {
         private List<Vector2Int> _walls = new List<Vector2Int>();
-        private List<bool[,]> _animationSteps = new List<bool[,]>();
         private List<Vector2Int> _animationStepsDelta = new List<Vector2Int>();
 
         public bool[,] GenerateMaze(int width, int depth)
         {
             return GenerateMaze(width, depth, false);
-        }
-
-        public List<bool[,]> GenerateMazeSteps(int width, int depth)
-        {
-            GenerateMaze(width, depth, true);
-            return _animationSteps;
         }
 
         public List<Vector2Int> GenerateMazeStepsDelta(int width, int depth)
@@ -57,7 +50,6 @@ namespace Assets.Scripts
                     if (storeSteps)
                     {
                         _animationStepsDelta.Add(new Vector2Int(wall.x, wall.y));
-                        _animationSteps.Add((bool[,])maze.Clone());
                     }
 
                     _walls.AddRange(GetWalls(maze, wall));
@@ -66,11 +58,6 @@ namespace Assets.Scripts
                 else
                 {
                     _walls.Remove(wall);
-                }
-
-                if (storeSteps)
-                {
-                    _animationSteps.Add((bool[,])maze.Clone());
                 }
             }
             return maze;

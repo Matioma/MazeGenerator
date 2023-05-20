@@ -453,7 +453,7 @@ MonoBehaviour:
   _width: 10
   _depth: 10
   _blockScale: 3
-  animate: 1
+  animate: 0
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -624,6 +624,10 @@ PrefabInstance:
     - target: {fileID: 5398752516085896117, guid: 2142e3a7fb77024469e1ce927a42f62a, type: 3}
       propertyPath: m_Name
       value: PuzzleUnit
+      objectReference: {fileID: 0}
+    - target: {fileID: 6582295487169133449, guid: 2142e3a7fb77024469e1ce927a42f62a, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2142e3a7fb77024469e1ce927a42f62a, type: 3}
