@@ -29,7 +29,7 @@ public class MazeBuilder : MonoBehaviour
         var primsMaze = new PrimsMaze();
 
         IGenerator mazeGenerator = primsMaze;
-        if (!_mazeSettings.animate) {
+        if (!_mazeSettings.Animate) {
             BuildMaze(mazeGenerator.GenerateMaze(_mazeSettings.Width, _mazeSettings.Depth));
         }
         else
