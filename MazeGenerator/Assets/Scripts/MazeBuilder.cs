@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Pool;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(MazeSettings))]
 public class MazeBuilder : MonoBehaviour
@@ -81,14 +79,13 @@ public class MazeBuilder : MonoBehaviour
             var position = mazeAnimationSteps[i];
             puzzleUnitCache[position.x, position.y].SetActive(false);
 
-            if (i % 100 == 0)
+            if (i % 300 == 0)
             {
                 yield return new WaitForSeconds(0.1f);
 
             }
         }
     }
-
 
     private Vector3 GetMazeStartLocation()
     {
