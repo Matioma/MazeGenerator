@@ -1,17 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class MazeAnimation
+public class MazeAnimation:MonoBehaviour
 {
     public int currentFrame = 0;
     private List<AnimationFrame> frames = new List<AnimationFrame>();
 
-    public MazeAnimation(List<AnimationFrame> animationFrames)
+    //public MazeAnimation(List<AnimationFrame> animationFrames)
+    //{
+    //    frames = animationFrames;
+    //}
+
+    public void LoadAnimation(List<AnimationFrame> animationFrames)
     {
+        currentFrame = 0;
         frames = animationFrames;
     }
+
 
     public AnimationFrame GetNext()
     {

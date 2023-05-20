@@ -4,7 +4,7 @@ using Random = UnityEngine.Random;
 
 namespace Assets.Scripts
 {
-    internal class PrimsMaze : IGenerator, IAnimationedGeneration
+    internal class PrimsMaze : IGenerator, IAnimationGeneration
     {
         private List<Vector2Int> _walls = new List<Vector2Int>();
 

@@ -1,33 +1,37 @@
 using Assets.Scripts;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(MazeSettings))]
+[RequireComponent (typeof(MazeAnimation))]
 public class MazeBuilder : MonoBehaviour
 {
     [SerializeField]
     private GameObject _mazeUnit;
     private MazeSettings _mazeSettings;
+    private MazeAnimation _mazeAnimation;
 
     public UnityEvent<MazeSettings> mazeCreated;
+
     private GameObject[,] puzzleUnitCache; 
     public void Awake()
     {
         _mazeSettings = GetComponent<MazeSettings>();
+        _mazeAnimation = GetComponent<MazeAnimation>();
         InitializeCache();
     }
 
     public void Generate()
     {
         StopAllCoroutines();
-        var primsMaze = new PrimsMaze();
+        IAnimationGeneration generatorAnimation = new PrimsMaze();
+        var animationFrames = generatorAnimation.GetMazeAnimation(_mazeSettings);
 
-        IAnimationedGeneration generatorAnimation = primsMaze;
-        var mazeWalls = generatorAnimation.GetMazeAnimation(_mazeSettings);
-        var mazAnimation = new MazeAnimation(mazeWalls);
+        _mazeAnimation.LoadAnimation(animationFrames);
 
-        StartCoroutine(PlayAnimation(mazAnimation));
+        StartCoroutine(PlayAnimation(_mazeAnimation));
         mazeCreated.Invoke(_mazeSettings);
     }
 
@@ -51,13 +55,15 @@ public class MazeBuilder : MonoBehaviour
     private IEnumerator PlayAnimation(MazeAnimation mazeAnimationFrames)
     {
         HideCache();
+        var indexOffset = new Vector2Int((MazeSettings.MAX_DIMENSION - _mazeSettings.Width) / 2, (MazeSettings.MAX_DIMENSION - _mazeSettings.Depth) / 2);
+        var mazeStartLocation = GetMazeStartLocation();
 
         var frameCounter = 0;
         AnimationFrame nextFrame;
         while ((nextFrame = mazeAnimationFrames.GetNext()) !=null)
         {
             frameCounter++;
-            RenderFrame(nextFrame, true);
+            RenderFrame(indexOffset, mazeStartLocation, nextFrame, true);
             if (frameCounter % 100 == 0)
             {
                 yield return new WaitForSeconds(0.1f);
@@ -65,11 +71,8 @@ public class MazeBuilder : MonoBehaviour
         }
     }
 
-    private void RenderFrame(AnimationFrame frame, bool isAddingWalls)
+    private void RenderFrame(Vector2Int indexOffset, Vector3 mazeStartLocation, AnimationFrame frame, bool isAddingWalls)
     {
-        var indexOffset = new Vector2Int((MazeSettings.MAX_DIMENSION - _mazeSettings.Width) / 2, (MazeSettings.MAX_DIMENSION - _mazeSettings.Depth) / 2);
-        var mazeStartLocation = GetMazeStartLocation();
-
         foreach (var wall in frame.Value)
         {
             var blockOffset = new Vector3(wall.x * _mazeSettings.BlockScale, 0, wall.y * _mazeSettings.BlockScale);
