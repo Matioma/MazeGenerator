@@ -26,6 +26,7 @@ public class MazeBuilder : MonoBehaviour
         _mazeAnimation = GetComponent<MazeAnimation>();
 
         _mazeAnimation.onRenderNextFrame.AddListener(HandleNextFrame);
+        _mazeAnimation.onResetAnimation.AddListener(HideCache);
         InitializeCache();
     }
 

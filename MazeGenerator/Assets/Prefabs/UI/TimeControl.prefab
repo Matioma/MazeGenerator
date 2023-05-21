@@ -530,6 +530,25 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4231055212414624416, guid: 55086b20adf0dd44286418ae89cb5309, type: 3}
   m_PrefabInstance: {fileID: 2523487313208138216}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1851683250589678409 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4231055212414624417, guid: 55086b20adf0dd44286418ae89cb5309, type: 3}
+  m_PrefabInstance: {fileID: 2523487313208138216}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5871889575553315790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1851683250589678409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0d23074bc28df64aac446614f3aff68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mazeSettings: {fileID: 0}
+  _mazeAnimation: {fileID: 0}
 --- !u!1001 &2695178008257135506
 PrefabInstance:
   m_ObjectHideFlags: 0

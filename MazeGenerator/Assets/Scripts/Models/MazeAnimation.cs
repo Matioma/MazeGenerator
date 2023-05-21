@@ -9,6 +9,7 @@ public class MazeAnimation : MonoBehaviour
     public UnityEvent<int> onFrameChanged;
     public UnityEvent<int> onAnimationFramesCountChange;
     public UnityEvent<AnimationFrame> onRenderNextFrame;
+    public UnityEvent onResetAnimation;
 
     public bool IsPaused { get; private set; }
     private int _currentFrame = 0;
@@ -33,8 +34,10 @@ public class MazeAnimation : MonoBehaviour
         }
     }
 
+
+    Coroutine animationRoutine = null;
     public void StartAnimation() {
-        StartCoroutine(PlayAnimation());
+       animationRoutine = StartCoroutine(PlayAnimation());
     }
 
     public void Play() {
@@ -45,7 +48,9 @@ public class MazeAnimation : MonoBehaviour
         IsPaused = true;
     }
 
-    public void StopAnimation() { 
+    public void ReplayAnimation() {
+        CurrentFrame = 0;
+        onResetAnimation?.Invoke();
     }
 
     private IEnumerator PlayAnimation()
@@ -79,9 +84,12 @@ public class MazeAnimation : MonoBehaviour
         }
     }
 
-    public void ResetAnimationState()
+    public void ResetAnimation()
     {
+        StopCoroutine(animationRoutine);
+        onResetAnimation.Invoke();
         CurrentFrame = 0;
+        StartCoroutine(PlayAnimation());
     }
 
     public void LoadAnimation(List<AnimationFrame> animationFrames)
@@ -115,5 +123,7 @@ public class MazeAnimation : MonoBehaviour
     {
         onFrameChanged.RemoveAllListeners();
         onAnimationFramesCountChange.RemoveAllListeners();
+        onRenderNextFrame.RemoveAllListeners();
+        onResetAnimation.RemoveAllListeners();
     }
 }
