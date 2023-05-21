@@ -11,7 +11,7 @@ public class MazeViewBase : MonoBehaviour
     [SerializeField]
     protected MazeAnimation _mazeAnimation;
 
-    protected virtual void Awake()
+    public virtual void Awake()
     {
         if (_mazeSettings == null)
         {

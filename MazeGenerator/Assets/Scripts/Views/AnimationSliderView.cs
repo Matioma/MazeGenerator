@@ -14,7 +14,7 @@ public class AnimationSliderView : MazeViewBase
     private int _frameNumber = 0;
     private int _maxFrameNumber = 0;
 
-    void Awake()
+    public override void Awake()
     {
         base.Awake();
 

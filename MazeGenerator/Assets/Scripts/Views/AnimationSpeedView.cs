@@ -13,13 +13,16 @@ public class AnimationSpeedView : MazeViewBase
     [SerializeField]
     private TextMeshProUGUI speedText;
 
+    [SerializeField]
+    private int speedStep = 10;
+
     private int frameSpeed;
 
     private void Awake()
     {
         base.Awake();
 
-        HandleSpeedChange(_mazeAnimation.playSpeed);
+        HandleSpeedChange(_mazeAnimation.PlaySpeed);
         _mazeAnimation.onPlaySpeedChanged.AddListener(HandleSpeedChange);
         _fasterButton.onClick.AddListener(IncreaseSpeed);
         _slowerButton.onClick.AddListener(DecreaseSpeed);
@@ -33,22 +36,22 @@ public class AnimationSpeedView : MazeViewBase
     private void DisplaySpeed(int speed) {
         if (frameSpeed > 0)
         {
-            speedText.text = $"X{speed}";
+            speedText.text = $"{speed}";
         }
         else if (frameSpeed == 0) {
             speedText.text = $"PAUSED";
         }
         else
         {
-            speedText.text = $"X ({speed})";
+            speedText.text = $"{speed}";
         }
     }
 
     private void IncreaseSpeed() {
-        _mazeAnimation.playSpeed += 1;
+        _mazeAnimation.PlaySpeed += speedStep;
     }
 
     private void DecreaseSpeed() {
-        _mazeAnimation.playSpeed -= 1;
+        _mazeAnimation.PlaySpeed -= speedStep;
     }
 }

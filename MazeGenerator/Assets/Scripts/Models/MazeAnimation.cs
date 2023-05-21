@@ -2,6 +2,7 @@ using Assets.Scripts;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -18,38 +19,40 @@ public class MazeAnimation : MonoBehaviour
         }
     }
 
-
+    [HideInInspector]
     public UnityEvent<int> onFrameChanged;
+    [HideInInspector]
     public UnityEvent<int> onAnimationFramesCountChange;
+    [HideInInspector]
     public UnityEvent<int> onPlaySpeedChanged;
+    [HideInInspector]
     public UnityEvent<AnimationFrame> onRenderNextFrame;
-    public UnityEvent onResetAnimation;
+    [HideInInspector]
+    public UnityEvent onAminationStart;
+    [HideInInspector]
+    public UnityEvent onAnimationFinished;
 
     public bool IsPaused { get; private set; }
     private int _currentFrame = 0;
 
-    private int _playSpeed = 1;
-    public int playSpeed {
-        get { 
+    private int _playSpeed = 100;
+    private int _oldSpeed = 100;
+    public int PlaySpeed
+    {
+        get
+        {
             return _playSpeed;
         }
-        set { 
-            if(_playSpeed == value ) {
+        set
+        {
+            if (_playSpeed == value)
+            {
                 return;
             }
             _playSpeed = value;
             onPlaySpeedChanged.Invoke(value);
-
-            if (value == 0)
-            {
-                Pause();
-            }
-            else {
-                Play();
-            }
-        } 
+        }
     }
-
     public int CurrentFrame
     {
         get { return _currentFrame; }
@@ -75,23 +78,24 @@ public class MazeAnimation : MonoBehaviour
     Coroutine animationRoutine = null;
     public void StartAnimation()
     {
+        if (animationRoutine != null)
+        {
+            StopCoroutine(animationRoutine);
+        }
+        onAminationStart?.Invoke();
+        CurrentFrame = 0;
         animationRoutine = StartCoroutine(PlayAnimation());
     }
 
     public void Play()
     {
-        IsPaused = false;
+        PlaySpeed = _oldSpeed;
     }
 
     public void Pause()
     {
-        IsPaused = true;
-    }
-
-    public void ReplayAnimation()
-    {
-        CurrentFrame = 0;
-        onResetAnimation?.Invoke();
+        _oldSpeed = PlaySpeed;
+        PlaySpeed = 0;
     }
 
     private IEnumerator PlayAnimation()
@@ -99,25 +103,36 @@ public class MazeAnimation : MonoBehaviour
         AnimationFrame nextFrame = null;
         do
         {
-            if (!IsPaused)
+            if (PlaySpeed!=0)
             {
                 nextFrame = GetNext();
             }
 
-            nextFrame.isReverse = _playSpeed < 0;
+            if (nextFrame != null)
+            {
+                nextFrame.isReverse = _playSpeed < 0;
+            }
+
             onRenderNextFrame.Invoke(nextFrame);
-            if (CurrentFrame % 100 == 0)
+
+            if (PlaySpeed == 0)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+            else if (CurrentFrame % Mathf.Abs(_playSpeed) == 0)
             {
                 yield return new WaitForSeconds(0.1f);
             }
 
         } while (nextFrame != null);
+
+        onAnimationFinished.Invoke();
     }
 
     public void ResetAnimation()
     {
         StopCoroutine(animationRoutine);
-        onResetAnimation.Invoke();
+        onAminationStart?.Invoke();
         CurrentFrame = 0;
         StartCoroutine(PlayAnimation());
     }
@@ -132,22 +147,20 @@ public class MazeAnimation : MonoBehaviour
     {
         if (isPlayForward() && IsNotLastFrame())
         {
-            var nextFrame = Frames[CurrentFrame];
             CurrentFrame++;
-            return nextFrame;
+            return Frames[CurrentFrame];
         }
         if (!isPlayForward() && IsNotFirstFrame())
         {
-            var nextFrame = Frames[CurrentFrame];
             CurrentFrame--;
-            return nextFrame;
+            return Frames[CurrentFrame];
         }
         return null;
     }
 
     private bool isPlayForward()
     {
-        return playSpeed > 0;
+        return PlaySpeed > 0;
     }
 
     private bool IsNotLastFrame()
@@ -160,24 +173,12 @@ public class MazeAnimation : MonoBehaviour
         return CurrentFrame > 0;
     }
 
-    public AnimationFrame GetPrevious()
-    {
-        if (CurrentFrame >= 0)
-        {
-            var nextFrame = Frames[CurrentFrame];
-            CurrentFrame--;
-            return nextFrame;
-        }
-        return null;
-    }
-
-
     public void OnDestroy()
     {
         onFrameChanged.RemoveAllListeners();
         onAnimationFramesCountChange.RemoveAllListeners();
         onRenderNextFrame.RemoveAllListeners();
-        onResetAnimation.RemoveAllListeners();
+        onAminationStart.RemoveAllListeners();
         onPlaySpeedChanged.RemoveAllListeners();
     }
 }
