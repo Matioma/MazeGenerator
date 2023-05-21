@@ -166,8 +166,8 @@ public class MazeAnimation : MonoBehaviour
     {
         if (IsNotFirstFrame())
         {
-            var previousFrame = Frames[CurrentFrame];
             CurrentFrame--;
+            var previousFrame = Frames[CurrentFrame];
             previousFrame.isReverse = true;
             onRenderNextFrame?.Invoke(previousFrame);
         }
@@ -189,8 +189,9 @@ public class MazeAnimation : MonoBehaviour
     {
         if (IsPlayForward() && IsNotLastFrame())
         {
+            var nextFrame = Frames[CurrentFrame];
             CurrentFrame++;
-            return Frames[CurrentFrame];
+            return nextFrame;
         }
         if (!IsPlayForward() && IsNotFirstFrame())
         {
@@ -207,7 +208,7 @@ public class MazeAnimation : MonoBehaviour
 
     private bool IsNotLastFrame()
     {
-        return CurrentFrame < Frames.Count-1;
+        return CurrentFrame < Frames.Count;
     }
 
     private bool IsNotFirstFrame()

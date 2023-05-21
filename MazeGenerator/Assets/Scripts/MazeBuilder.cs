@@ -34,7 +34,6 @@ public class MazeBuilder : MonoBehaviour
         StopAllCoroutines();
         IAnimationGeneration generatorAnimation = new PrimsMaze();
         var animationFrames = generatorAnimation.GetMazeAnimation(_mazeSettings);
-
         _mazeAnimation.LoadAnimation(animationFrames);
         HidePool();
         _indexOffset = new Vector2Int((MazeSettings.MAX_DIMENSION - _mazeSettings.Width) / 2, (MazeSettings.MAX_DIMENSION - _mazeSettings.Depth) / 2);

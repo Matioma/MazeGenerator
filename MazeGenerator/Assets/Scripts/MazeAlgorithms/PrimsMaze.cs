@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -17,6 +18,7 @@ namespace Assets.Scripts
         {
             var maze = new bool[mazeSettings.Width, mazeSettings.Depth];
             List<AnimationFrame> animationFrames = new List<AnimationFrame>();
+            List<Vector2Int> definitelyWalls= new List<Vector2Int>();
 
 
             //Pick start Cell
@@ -42,21 +44,26 @@ namespace Assets.Scripts
                 {
                     maze[wall.x, wall.y] = true;
 
-
-                    _walls.AddRange(GetWalls(maze, wall));
                     _walls.Remove(wall);
 
-                    animationFrames.Add(new AnimationFrame(new Vector2Int(wall.x, wall.y), _walls.ToArray()));
+                    var newWalls = wallsOfNewlySelectedCell.Where(x => !_walls.Contains(x)).ToArray();
+                    var newWallsWithoutDefinetlyWalls = newWalls.Where(x => !definitelyWalls.Contains(x)).ToArray();
+
+
+                    _walls.AddRange(GetWalls(maze, wall));
+                    animationFrames.Add(new AnimationFrame(new Vector2Int(wall.x, wall.y), newWallsWithoutDefinetlyWalls));
                 }
                 else
                 {
                     _walls.Remove(wall);
+                    definitelyWalls.Add(wall);
                 }
             }
 
             if (mazeSettings.Animate == false)
             {
                 animationFrames.Clear();
+                definitelyWalls.Clear();
             }
 
             List<Vector2Int> lastWalls = new List<Vector2Int>();
@@ -70,7 +77,10 @@ namespace Assets.Scripts
                     }
                 }
             }
-            animationFrames.Add(new AnimationFrame(startCell, lastWalls.ToArray()));
+
+            var deltaLastWalls = lastWalls.Where(x => !definitelyWalls.Contains(x)).ToArray();
+
+            animationFrames.Add(new AnimationFrame(startCell, deltaLastWalls));
             return animationFrames;
         }
 
