@@ -50,7 +50,7 @@ public class MazeBuilder : MonoBehaviour
         if (nextFrame == null) {
             return;
         }
-        RenderFrame(indexOffset, mazeStartLocation, nextFrame, true);
+        RenderFrame(indexOffset, mazeStartLocation, nextFrame, !nextFrame.isReverse);
     }
 
     private void InitializeCache()

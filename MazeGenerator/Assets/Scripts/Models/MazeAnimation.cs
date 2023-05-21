@@ -104,6 +104,7 @@ public class MazeAnimation : MonoBehaviour
                 nextFrame = GetNext();
             }
 
+            nextFrame.isReverse = _playSpeed < 0;
             onRenderNextFrame.Invoke(nextFrame);
             if (CurrentFrame % 100 == 0)
             {

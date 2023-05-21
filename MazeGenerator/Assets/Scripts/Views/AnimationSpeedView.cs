@@ -40,7 +40,7 @@ public class AnimationSpeedView : MazeViewBase
         }
         else
         {
-            speedText.text = $"X (-{speed})";
+            speedText.text = $"X ({speed})";
         }
     }
 

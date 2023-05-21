@@ -25,7 +25,6 @@ public class AnimationSliderView : MazeViewBase
     }
 
     private void handleAnimationFrameChange(float value) {
-        Debug.Log(value);
     }
 
     private void handleCurrentFrameDisplay(int frame)
