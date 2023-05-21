@@ -1,29 +1,28 @@
 using Assets.Scripts;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class TimeControlView : MonoBehaviour
 {
+    [Header("Models")]
     [SerializeField]
     private MazeSettings _mazeSettings;
 
     [SerializeField]
     private MazeAnimation _mazeAnimation;
 
+    [Header("Slider")]
     [SerializeField]
     private TMP_InputField _currentFrameTextMesh;
 
     [SerializeField]
     private Slider _animationSlider;
 
-
     private int _frameNumber = 0;
     private int _maxFrameNumber = 0;
 
+  
     void Awake()
     {
         if (_mazeSettings == null)

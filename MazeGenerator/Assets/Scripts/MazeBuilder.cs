@@ -15,11 +15,17 @@ public class MazeBuilder : MonoBehaviour
 
     public UnityEvent<MazeSettings> mazeCreated;
 
-    private GameObject[,] puzzleUnitCache; 
+    private GameObject[,] puzzleUnitCache;
+
+    Vector2Int indexOffset;
+    Vector3 mazeStartLocation;
+
     public void Awake()
     {
         _mazeSettings = GetComponent<MazeSettings>();
         _mazeAnimation = GetComponent<MazeAnimation>();
+
+        _mazeAnimation.onRenderNextFrame.AddListener(HandleNextFrame);
         InitializeCache();
     }
 
@@ -30,9 +36,20 @@ public class MazeBuilder : MonoBehaviour
         var animationFrames = generatorAnimation.GetMazeAnimation(_mazeSettings);
 
         _mazeAnimation.LoadAnimation(animationFrames);
+        HideCache();
+        indexOffset = new Vector2Int((MazeSettings.MAX_DIMENSION - _mazeSettings.Width) / 2, (MazeSettings.MAX_DIMENSION - _mazeSettings.Depth) / 2);
+        mazeStartLocation = GetMazeStartLocation();
 
-        StartCoroutine(PlayAnimation(_mazeAnimation));
+        _mazeAnimation.StartAnimation();
+
         mazeCreated.Invoke(_mazeSettings);
+    }
+
+    private void HandleNextFrame(AnimationFrame nextFrame) {
+        if (nextFrame == null) {
+            return;
+        }
+        RenderFrame(indexOffset, mazeStartLocation, nextFrame, true);
     }
 
     private void InitializeCache()
