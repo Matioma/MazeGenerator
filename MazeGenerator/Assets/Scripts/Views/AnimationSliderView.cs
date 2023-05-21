@@ -14,13 +14,18 @@ public class AnimationSliderView : MazeViewBase
     private int _frameNumber = 0;
     private int _maxFrameNumber = 0;
 
-
     void Awake()
     {
         base.Awake();
 
         _mazeAnimation.onFrameChanged.AddListener(handleCurrentFrameDisplay);
         _mazeAnimation.onAnimationFramesCountChange.AddListener(handleAnimationFrameCountChange);
+
+        _animationSlider.onValueChanged.AddListener(handleAnimationFrameChange);
+    }
+
+    private void handleAnimationFrameChange(float value) {
+        Debug.Log(value);
     }
 
     private void handleCurrentFrameDisplay(int frame)
