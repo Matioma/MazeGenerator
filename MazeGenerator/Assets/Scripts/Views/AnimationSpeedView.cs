@@ -18,7 +18,7 @@ public class AnimationSpeedView : MazeViewBase
 
     private int frameSpeed;
 
-    private void Awake()
+    public override void Awake()
     {
         base.Awake();
 

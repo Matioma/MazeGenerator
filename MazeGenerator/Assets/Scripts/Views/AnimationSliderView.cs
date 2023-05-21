@@ -25,6 +25,7 @@ public class AnimationSliderView : MazeViewBase
     }
 
     private void handleAnimationFrameChange(float value) {
+        //_mazeAnimation.PlayFrame((int)value);
     }
 
     private void handleCurrentFrameDisplay(int frame)
@@ -43,6 +44,6 @@ public class AnimationSliderView : MazeViewBase
     public void UpdateViews()
     {
         _currentFrameTextMesh.text = _frameNumber.ToString();
-        _animationSlider.value = _frameNumber;
+        //_animationSlider.value = _frameNumber;
     }
 }

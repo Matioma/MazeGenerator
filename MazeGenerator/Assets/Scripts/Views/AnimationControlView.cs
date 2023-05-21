@@ -12,30 +12,48 @@ public class AnimationControlView : MazeViewBase
     [SerializeField]
     private GameObject _playButton;
 
-    void Awake()
+
+    [SerializeField]
+    private Button _nextFrameButton;
+    [SerializeField]
+    private Button _previousFrameButton;
+
+    public override void Awake()
     {
         base.Awake();
 
-        handleAnimationToggle(_mazeSettings.Animate);
-        _mazeSettings.onAnimateChanged.AddListener(handleAnimationToggle);
+        HandleAnimationToggle(_mazeSettings.Animate);
+        _mazeSettings.onAnimateChanged.AddListener(HandleAnimationToggle);
 
-        _mazeAnimation.onAnimationFinished.AddListener(handleAnimationFinished);
-        _mazeAnimation.onAminationStart.AddListener(handleAnimationStarted);
+        _mazeAnimation.onAnimationFinished.AddListener(HandleAnimationFinished);
+        _mazeAnimation.onAminationStart.AddListener(HandleAnimationStarted);
+
+        _nextFrameButton.onClick.AddListener(HandleNextFrameClick);
+        _previousFrameButton.onClick.AddListener(HandlePreviousFrameClick);
     }
 
-    private void handleAnimationFinished() {
+    private void HandleNextFrameClick(){
+        _mazeAnimation.RenderNext();
+    }
+
+    private void HandlePreviousFrameClick()
+    {
+        _mazeAnimation.RenderPrevious();
+    }
+
+    private void HandleAnimationFinished() {
         _replayButton.SetActive(true);
         _playButton.SetActive(false);
     }
 
-    private void handleAnimationStarted()
+    private void HandleAnimationStarted()
     {
         _replayButton.SetActive(false);
         _playButton.SetActive(true);
     }
 
 
-    private void handleAnimationToggle(bool newValue) {
+    private void HandleAnimationToggle(bool newValue) {
         if(newValue)
         {
             Show();

@@ -47,7 +47,6 @@ public class MazeBuilder : MonoBehaviour
 
     private void HandleNextFrame(AnimationFrame nextFrame) {
         if (nextFrame == null) {
-            HidePool();
             return;
         }
         RenderFrame(_indexOffset, _mazeStartLocation, nextFrame, !nextFrame.isReverse);

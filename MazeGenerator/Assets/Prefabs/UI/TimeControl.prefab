@@ -82,6 +82,8 @@ MonoBehaviour:
   _mazeAnimation: {fileID: 0}
   _replayButton: {fileID: 1851683250589678409}
   _playButton: {fileID: 7906239391285112174}
+  _nextFrameButton: {fileID: 5875289907529430828}
+  _previousFrameButton: {fileID: 3763332081319532868}
 --- !u!1 &9120598947534629944
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,19 +597,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6002333974460916979, guid: f526228db28e8b141b39a490f531b2b0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6002333974460916979, guid: f526228db28e8b141b39a490f531b2b0, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6002333974460916979, guid: f526228db28e8b141b39a490f531b2b0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.48950005
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6002333974460916979, guid: f526228db28e8b141b39a490f531b2b0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.7994995
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7634995326847899512, guid: f526228db28e8b141b39a490f531b2b0, type: 3}
       propertyPath: m_Pivot.x
@@ -695,22 +697,44 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8948906996661744811, guid: f526228db28e8b141b39a490f531b2b0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8948906996661744811, guid: f526228db28e8b141b39a490f531b2b0, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8948906996661744811, guid: f526228db28e8b141b39a490f531b2b0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.48950005
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8948906996661744811, guid: f526228db28e8b141b39a490f531b2b0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -40.7995
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f526228db28e8b141b39a490f531b2b0, type: 3}
+--- !u!114 &3763332081319532868 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 54780719679700367, guid: f526228db28e8b141b39a490f531b2b0, type: 3}
+  m_PrefabInstance: {fileID: 3816963759808554187}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5875289907529430828 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7309814273018368999, guid: f526228db28e8b141b39a490f531b2b0, type: 3}
+  m_PrefabInstance: {fileID: 3816963759808554187}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &6704847868205003699 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7634995326847899512, guid: f526228db28e8b141b39a490f531b2b0, type: 3}

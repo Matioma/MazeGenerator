@@ -15,7 +15,7 @@ public class PauseButtonView : MazeViewBase
     private bool _isPlaying = true;
     private Button _pauseButton;
 
-    private void Awake()
+    public override void Awake()
     {
         base.Awake();
         _pauseButton = GetComponent<Button>();

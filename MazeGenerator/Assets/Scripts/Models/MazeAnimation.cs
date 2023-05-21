@@ -32,6 +32,9 @@ public class MazeAnimation : MonoBehaviour
     [HideInInspector]
     public UnityEvent onAnimationFinished;
 
+
+    [SerializeField]
+    private readonly int DEFAULT_SPEED = 1; 
     public bool IsPaused { get; private set; }
     private int _currentFrame = 0;
 
@@ -83,6 +86,7 @@ public class MazeAnimation : MonoBehaviour
             StopCoroutine(animationRoutine);
         }
         onAminationStart?.Invoke();
+        PlaySpeed = DEFAULT_SPEED;
         CurrentFrame = 0;
         animationRoutine = StartCoroutine(PlayAnimation());
     }
@@ -101,6 +105,7 @@ public class MazeAnimation : MonoBehaviour
     private IEnumerator PlayAnimation()
     {
         AnimationFrame nextFrame = null;
+
         do
         {
             if (PlaySpeed!=0)
@@ -114,7 +119,6 @@ public class MazeAnimation : MonoBehaviour
             }
 
             onRenderNextFrame.Invoke(nextFrame);
-
             if (PlaySpeed == 0)
             {
                 yield return new WaitForSeconds(0.1f);
@@ -125,16 +129,54 @@ public class MazeAnimation : MonoBehaviour
             }
 
         } while (nextFrame != null);
-
         onAnimationFinished.Invoke();
     }
 
+    public void PlayFrame(int frame) {
+        if (frame >= Frames.Count || frame < 0) {
+            Debug.LogError("Tryied to play a frame outside the bound of animationFrame list");
+            return;
+        }
+        if (frame > CurrentFrame) { 
+            for(var index=CurrentFrame; index < frame; index++)
+            {
+                onRenderNextFrame.Invoke(Frames[index]);
+            }
+        }
+
+        if(frame < CurrentFrame) {
+            for (var index = CurrentFrame; index > frame; index--)
+            {
+                var previousFrame = Frames[index];
+                previousFrame.isReverse = true;
+                onRenderNextFrame.Invoke(previousFrame);
+            }
+        }
+    }
+
+    public void RenderNext()
+    {
+        if (IsNotLastFrame()) {
+            CurrentFrame++;
+            onRenderNextFrame?.Invoke(Frames[CurrentFrame]);
+        }
+    }
+
+    public void RenderPrevious()
+    {
+        if (IsNotFirstFrame())
+        {
+            var previousFrame = Frames[CurrentFrame];
+            CurrentFrame--;
+            previousFrame.isReverse = true;
+            onRenderNextFrame?.Invoke(previousFrame);
+        }
+    }
+
+
     public void ResetAnimation()
     {
-        StopCoroutine(animationRoutine);
-        onAminationStart?.Invoke();
-        CurrentFrame = 0;
-        StartCoroutine(PlayAnimation());
+        StartAnimation();
     }
 
     public void LoadAnimation(List<AnimationFrame> animationFrames)
@@ -145,12 +187,12 @@ public class MazeAnimation : MonoBehaviour
 
     public AnimationFrame GetNext()
     {
-        if (isPlayForward() && IsNotLastFrame())
+        if (IsPlayForward() && IsNotLastFrame())
         {
             CurrentFrame++;
             return Frames[CurrentFrame];
         }
-        if (!isPlayForward() && IsNotFirstFrame())
+        if (!IsPlayForward() && IsNotFirstFrame())
         {
             CurrentFrame--;
             return Frames[CurrentFrame];
@@ -158,14 +200,14 @@ public class MazeAnimation : MonoBehaviour
         return null;
     }
 
-    private bool isPlayForward()
+    private bool IsPlayForward()
     {
         return PlaySpeed > 0;
     }
 
     private bool IsNotLastFrame()
     {
-        return CurrentFrame < Frames.Count;
+        return CurrentFrame < Frames.Count-1;
     }
 
     private bool IsNotFirstFrame()
