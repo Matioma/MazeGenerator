@@ -883,9 +883,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mazeSettings: {fileID: 0}
   _mazeAnimation: {fileID: 0}
-  pauseImage: {fileID: 2800000, guid: 63974e050263a8349b73ea9a62260c7a, type: 3}
-  playImage: {fileID: 2800000, guid: 8d1412e521145ae44a0dbbbd663a8612, type: 3}
-  image: {fileID: 2212236815892808282}
+  _pauseImage: {fileID: 2800000, guid: 63974e050263a8349b73ea9a62260c7a, type: 3}
+  _playImage: {fileID: 2800000, guid: 8d1412e521145ae44a0dbbbd663a8612, type: 3}
+  _image: {fileID: 2212236815892808282}
 --- !u!224 &7906239391285112175 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4231055212414624416, guid: 55086b20adf0dd44286418ae89cb5309, type: 3}

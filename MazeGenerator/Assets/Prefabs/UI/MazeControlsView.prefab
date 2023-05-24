@@ -568,8 +568,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuRect: {fileID: 5257009977010681239}
-  transitionTime: 0.25
-  layoutGroup: {fileID: 8536764517981978534}
+  _transitionTime: 5
+  _layoutGroup: {fileID: 8536764517981978534}
 --- !u!1 &6165891203493932331
 GameObject:
   m_ObjectHideFlags: 0
