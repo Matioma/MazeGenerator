@@ -1,6 +1,8 @@
 using Assets.Scripts;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -34,7 +36,7 @@ public class MazeAnimation : MonoBehaviour
 
 
     [SerializeField]
-    private readonly int DEFAULT_SPEED = 1; 
+    private readonly int DEFAULT_SPEED = 10; 
     public bool IsPaused { get; private set; }
     private int _currentFrame = 0;
 
@@ -77,7 +79,6 @@ public class MazeAnimation : MonoBehaviour
         }
     }
 
-
     Coroutine animationRoutine = null;
     public void StartAnimation()
     {
@@ -117,8 +118,8 @@ public class MazeAnimation : MonoBehaviour
             {
                 nextFrame.isReverse = _playSpeed < 0;
             }
-
             onRenderNextFrame.Invoke(nextFrame);
+
             if (PlaySpeed == 0)
             {
                 yield return new WaitForSeconds(0.1f);
@@ -127,31 +128,8 @@ public class MazeAnimation : MonoBehaviour
             {
                 yield return new WaitForSeconds(0.1f);
             }
-
         } while (nextFrame != null);
         onAnimationFinished.Invoke();
-    }
-
-    public void PlayFrame(int frame) {
-        if (frame >= Frames.Count || frame < 0) {
-            Debug.LogError("Tryied to play a frame outside the bound of animationFrame list");
-            return;
-        }
-        if (frame > CurrentFrame) { 
-            for(var index=CurrentFrame; index < frame; index++)
-            {
-                onRenderNextFrame.Invoke(Frames[index]);
-            }
-        }
-
-        if(frame < CurrentFrame) {
-            for (var index = CurrentFrame; index > frame; index--)
-            {
-                var previousFrame = Frames[index];
-                previousFrame.isReverse = true;
-                onRenderNextFrame.Invoke(previousFrame);
-            }
-        }
     }
 
     public void RenderNext()

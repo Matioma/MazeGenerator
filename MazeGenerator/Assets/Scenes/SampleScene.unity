@@ -642,6 +642,10 @@ PrefabInstance:
       propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1375006786282998451, guid: 80731f22a1b0a8446bbb0a5462af3c01, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1375006786696375636, guid: 80731f22a1b0a8446bbb0a5462af3c01, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -816,7 +820,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7770615230655578055, guid: 80731f22a1b0a8446bbb0a5462af3c01, type: 3}
       propertyPath: speedStep
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8955187126981203911, guid: 80731f22a1b0a8446bbb0a5462af3c01, type: 3}
       propertyPath: m_AnchorMax.y

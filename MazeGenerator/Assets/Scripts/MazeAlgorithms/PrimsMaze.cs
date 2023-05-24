@@ -20,19 +20,14 @@ namespace Assets.Scripts
             List<AnimationFrame> animationFrames = new List<AnimationFrame>();
             List<Vector2Int> definitelyWalls= new List<Vector2Int>();
 
-
             //Pick start Cell
             int x = Random.Range(1, maze.GetLength(0) - 1);
             int z = Random.Range(1, maze.GetLength(1) - 1);
             Vector2Int startCell = new Vector2Int(x, z);
 
-
             maze[startCell.x, startCell.y] = true;
-
             _walls.AddRange(GetWalls(maze, startCell));
-
             animationFrames.Add(new AnimationFrame(startCell, _walls.ToArray()));
-
 
             while (_walls.Count > 0)
             {
@@ -48,7 +43,6 @@ namespace Assets.Scripts
 
                     var newWalls = wallsOfNewlySelectedCell.Where(x => !_walls.Contains(x)).ToArray();
                     var newWallsWithoutDefinetlyWalls = newWalls.Where(x => !definitelyWalls.Contains(x)).ToArray();
-
 
                     _walls.AddRange(GetWalls(maze, wall));
                     animationFrames.Add(new AnimationFrame(new Vector2Int(wall.x, wall.y), newWallsWithoutDefinetlyWalls));
