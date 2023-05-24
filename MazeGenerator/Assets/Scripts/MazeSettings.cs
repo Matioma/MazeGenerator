@@ -73,6 +73,7 @@ namespace Assets.Scripts
         {
             onWidthChange.RemoveAllListeners();
             onDepthChange.RemoveAllListeners();
+            onAnimateChanged.RemoveAllListeners();
         }
     }
 }

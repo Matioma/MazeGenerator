@@ -1,4 +1,3 @@
-using Assets.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,22 +17,15 @@ public class AnimationSliderView : MazeViewBase
     {
         base.Awake();
 
-        _mazeAnimation.onFrameChanged.AddListener(handleCurrentFrameDisplay);
-        _mazeAnimation.onAnimationFramesCountChange.AddListener(handleAnimationFrameCountChange);
-
-        //_animationSlider.onValueChanged.AddListener(handleAnimationFrameChange);
+        _mazeAnimation.onFrameChanged.AddListener(HandleCurrentFrameDisplay);
+        _mazeAnimation.onAnimationFramesCountChange.AddListener(HandleAnimationFrameCountChange);
     }
-
-    //private void handleAnimationFrameChange(float value) {
-    //    _mazeAnimation.PlayFrame((int)value);
-    //}
-
-    private void handleCurrentFrameDisplay(int frame)
+    private void HandleCurrentFrameDisplay(int frame)
     {
         _frameNumber = frame;
         UpdateViews();
     }
-    private void handleAnimationFrameCountChange(int frame)
+    private void HandleAnimationFrameCountChange(int frame)
     {
         _maxFrameNumber = frame;
         _animationSlider.minValue = 1;

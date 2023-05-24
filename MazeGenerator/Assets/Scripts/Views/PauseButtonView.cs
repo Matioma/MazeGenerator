@@ -6,11 +6,11 @@ public class PauseButtonView : MazeViewBase
 {
     [Header("ButtonSettings")]
     [SerializeField]
-    private Texture2D pauseImage;
+    private Texture2D _pauseImage;
     [SerializeField]
-    private Texture2D playImage;
+    private Texture2D _playImage;
     [SerializeField]
-    private RawImage image;
+    private RawImage _image;
 
     private bool _isPlaying = true;
     private Button _pauseButton;
@@ -40,11 +40,11 @@ public class PauseButtonView : MazeViewBase
     private void SetImage(bool isPlaying) { 
         if(isPlaying)
         {
-            image.texture = pauseImage;
+            _image.texture = _pauseImage;
         }
         else
         {
-            image.texture = playImage;
+            _image.texture = _playImage;
         }
     }
 }

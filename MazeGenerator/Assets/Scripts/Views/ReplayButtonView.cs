@@ -11,8 +11,6 @@ public class ReplayButtonView : MazeViewBase
     {
         base.Awake();
         _pauseButton = GetComponent<Button>();
-
-
         _pauseButton.onClick.AddListener(HandleClickButton);
     }
 

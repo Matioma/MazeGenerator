@@ -1,10 +1,5 @@
-using Assets.Scripts;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -103,35 +98,6 @@ public class MazeAnimation : MonoBehaviour
         PlaySpeed = 0;
     }
 
-    private IEnumerator PlayAnimation()
-    {
-        AnimationFrame nextFrame = null;
-
-        do
-        {
-            if (PlaySpeed!=0)
-            {
-                nextFrame = GetNext();
-            }
-
-            if (nextFrame != null)
-            {
-                nextFrame.isReverse = _playSpeed < 0;
-            }
-            onRenderNextFrame.Invoke(nextFrame);
-
-            if (PlaySpeed == 0)
-            {
-                yield return new WaitForSeconds(0.1f);
-            }
-            else if (CurrentFrame % Mathf.Abs(_playSpeed) == 0)
-            {
-                yield return new WaitForSeconds(0.1f);
-            }
-        } while (nextFrame != null);
-        onAnimationFinished.Invoke();
-    }
-
     public void RenderNext()
     {
         if (IsNotLastFrame()) {
@@ -150,7 +116,6 @@ public class MazeAnimation : MonoBehaviour
             onRenderNextFrame?.Invoke(previousFrame);
         }
     }
-
 
     public void ResetAnimation()
     {
@@ -177,6 +142,35 @@ public class MazeAnimation : MonoBehaviour
             return Frames[CurrentFrame];
         }
         return null;
+    }
+
+    private IEnumerator PlayAnimation()
+    {
+        AnimationFrame nextFrame = null;
+
+        do
+        {
+            if (PlaySpeed != 0)
+            {
+                nextFrame = GetNext();
+            }
+
+            if (nextFrame != null)
+            {
+                nextFrame.isReverse = _playSpeed < 0;
+            }
+            onRenderNextFrame.Invoke(nextFrame);
+
+            if (PlaySpeed == 0)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+            else if (CurrentFrame % Mathf.Abs(_playSpeed) == 0)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+        } while (nextFrame != null);
+        onAnimationFinished.Invoke();
     }
 
     private bool IsPlayForward()

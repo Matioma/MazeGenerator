@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static System.TimeZoneInfo;
 
 public class MenuView : MonoBehaviour
 {
@@ -11,9 +9,9 @@ public class MenuView : MonoBehaviour
     private float _defaultRectWidth;
 
     [SerializeField]
-    private float transitionTime =5.0f;
+    private float _transitionTime =5.0f;
     [SerializeField]
-    private RectTransform layoutGroup;
+    private RectTransform _layoutGroup;
 
     private bool _menuIsOpen = true;
 
@@ -26,28 +24,28 @@ public class MenuView : MonoBehaviour
     {
         if (_menuIsOpen)
         {
-            StartCoroutine(menuLerp(0));
+            StartCoroutine(MenuLerp(0));
         }
         else {
-            StartCoroutine(menuLerp(_defaultRectWidth));
+            StartCoroutine(MenuLerp(_defaultRectWidth));
         }
         _menuIsOpen = !_menuIsOpen;
     }
 
-    private IEnumerator menuLerp(float targetWidth)
+    private IEnumerator MenuLerp(float targetWidth)
     {
         float timeElapsed = 0;
         float startWidth = _menuRect.rect.width;
 
-        while (timeElapsed < transitionTime)
+        while (timeElapsed < _transitionTime)
         {
-            _menuRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Lerp(startWidth, targetWidth, timeElapsed / transitionTime));
+            _menuRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Lerp(startWidth, targetWidth, timeElapsed / _transitionTime));
             timeElapsed += Time.deltaTime;
-            LayoutRebuilder.MarkLayoutForRebuild(layoutGroup);
+            LayoutRebuilder.MarkLayoutForRebuild(_layoutGroup);
             yield return null;
         }
 
         _menuRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, targetWidth);
-        LayoutRebuilder.MarkLayoutForRebuild(layoutGroup);
+        LayoutRebuilder.MarkLayoutForRebuild(_layoutGroup);
     }
 }

@@ -16,8 +16,8 @@ public class MazeBuilder : MonoBehaviour
     public UnityEvent<MazeSettings> mazeCreated;
 
     private GameObject[,] _mazeUnitsPool;
-    private Vector2Int _indexOffset;
-    private Vector3 _mazeStartLocation;
+    private Vector2Int _indexOffsetRelativeToThePool;
+    private Vector3 _mazePositionEdgeCorner;
 
     public void Awake()
     {
@@ -35,10 +35,10 @@ public class MazeBuilder : MonoBehaviour
         IAnimationGeneration generatorAnimation = new PrimsMaze();
         var animationFrames = generatorAnimation.GetMazeAnimation(_mazeSettings);
         _mazeAnimation.LoadAnimation(animationFrames);
+        
         HidePool();
-        _indexOffset = new Vector2Int((MazeSettings.MAX_DIMENSION - _mazeSettings.Width) / 2, (MazeSettings.MAX_DIMENSION - _mazeSettings.Depth) / 2);
-        _mazeStartLocation = GetMazeStartLocation();
-
+        _indexOffsetRelativeToThePool = new Vector2Int((MazeSettings.MAX_DIMENSION - _mazeSettings.Width) / 2, (MazeSettings.MAX_DIMENSION - _mazeSettings.Depth) / 2);
+        _mazePositionEdgeCorner = GetMazeStartLocation();
         _mazeAnimation.StartAnimation();
 
         mazeCreated.Invoke(_mazeSettings);
@@ -48,7 +48,7 @@ public class MazeBuilder : MonoBehaviour
         if (nextFrame == null) {
             return;
         }
-        RenderFrame(_indexOffset, _mazeStartLocation, nextFrame, !nextFrame.isReverse);
+        RenderFrame(_indexOffsetRelativeToThePool, _mazePositionEdgeCorner, nextFrame, !nextFrame.isReverse);
     }
     private void InitializePool()
     {
@@ -68,15 +68,14 @@ public class MazeBuilder : MonoBehaviour
     }
     private void RenderFrame(Vector2Int indexOffset, Vector3 mazeStartLocation, AnimationFrame frame, bool isAddingWalls)
     {
-        foreach (var wall in frame.Value)
+        foreach (var wall in frame.Walls)
         {
-            var blockOffset = new Vector3(wall.x * _mazeSettings.BlockScale, 0, wall.y * _mazeSettings.BlockScale);
-            _mazeUnitsPool[indexOffset.x + wall.x, indexOffset.y + wall.y].transform.position = mazeStartLocation + blockOffset;
-
+            var blockPositionOffset = new Vector3(wall.x * _mazeSettings.BlockScale, 0, wall.y * _mazeSettings.BlockScale);
+            _mazeUnitsPool[indexOffset.x + wall.x, indexOffset.y + wall.y].transform.position = mazeStartLocation + blockPositionOffset;
             _mazeUnitsPool[indexOffset.x + wall.x, indexOffset.y + wall.y].SetActive(isAddingWalls);
         }
 
-        if (frame.Key is Vector2Int cell)
+        if (frame.Path is Vector2Int cell)
         {
             _mazeUnitsPool[indexOffset.x + cell.x, indexOffset.y + cell.y].SetActive(!isAddingWalls);
         }

@@ -5,9 +5,9 @@ using Random = UnityEngine.Random;
 
 namespace Assets.Scripts
 {
-    internal class PrimsMaze : IGenerator, IAnimationGeneration
+    internal class PrimsMaze : IAnimationGeneration
     {
-        private List<Vector2Int> _walls = new List<Vector2Int>();
+        private List<Vector2Int> _potentialWalls = new List<Vector2Int>();
 
         public List<AnimationFrame> GetMazeAnimation(MazeSettings mazeSettings)
         {
@@ -16,66 +16,77 @@ namespace Assets.Scripts
 
         private List<AnimationFrame> GenerateMaze(MazeSettings mazeSettings)
         {
-            var maze = new bool[mazeSettings.Width, mazeSettings.Depth];
+            var mazeData = new bool[mazeSettings.Width, mazeSettings.Depth];
             List<AnimationFrame> animationFrames = new List<AnimationFrame>();
-            List<Vector2Int> definitelyWalls= new List<Vector2Int>();
+            List<Vector2Int> definitelyWalls = new List<Vector2Int>();
 
             //Pick start Cell
-            int x = Random.Range(1, maze.GetLength(0) - 1);
-            int z = Random.Range(1, maze.GetLength(1) - 1);
+            int x = Random.Range(1, mazeData.GetLength(0) - 1);
+            int z = Random.Range(1, mazeData.GetLength(1) - 1);
             Vector2Int startCell = new Vector2Int(x, z);
 
-            maze[startCell.x, startCell.y] = true;
-            _walls.AddRange(GetWalls(maze, startCell));
-            animationFrames.Add(new AnimationFrame(startCell, _walls.ToArray()));
+            // Set the First Cell as Path
+            mazeData[startCell.x, startCell.y] = true;
+            _potentialWalls.AddRange(GetWalls(mazeData, startCell));
+            animationFrames.Add(new AnimationFrame(startCell, _potentialWalls.ToArray()));
 
-            while (_walls.Count > 0)
+
+            while (AnyWallIsPotentialPath())
             {
-                var randomWallIndex = Random.Range(0, _walls.Count);
-                var wall = _walls[randomWallIndex];
+                var randomWallIndex = Random.Range(0, _potentialWalls.Count);
+                var potentialPath = _potentialWalls[randomWallIndex];
 
-                var wallsOfNewlySelectedCell = GetWalls(maze, wall);
-                if (wallsOfNewlySelectedCell.Count >= 3)
+                var wallsAroundPotentialPath = GetWalls(mazeData, potentialPath);
+                if (WallsCompletlySurroundPotentialPath(wallsAroundPotentialPath))
                 {
-                    maze[wall.x, wall.y] = true;
+                    mazeData[potentialPath.x, potentialPath.y] = true; 
+                    _potentialWalls.Remove(potentialPath);
 
-                    _walls.Remove(wall);
+                    var deltaWalls = wallsAroundPotentialPath.Where(x => !_potentialWalls.Contains(x)).ToArray();
+                    var deltaWallsWithoutDefinetlyWalls = deltaWalls.Where(x => !definitelyWalls.Contains(x)).ToArray();
 
-                    var newWalls = wallsOfNewlySelectedCell.Where(x => !_walls.Contains(x)).ToArray();
-                    var newWallsWithoutDefinetlyWalls = newWalls.Where(x => !definitelyWalls.Contains(x)).ToArray();
-
-                    _walls.AddRange(GetWalls(maze, wall));
-                    animationFrames.Add(new AnimationFrame(new Vector2Int(wall.x, wall.y), newWallsWithoutDefinetlyWalls));
+                    _potentialWalls.AddRange(GetWalls(mazeData, potentialPath));
+                    animationFrames.Add(new AnimationFrame(new Vector2Int(potentialPath.x, potentialPath.y), deltaWallsWithoutDefinetlyWalls));
                 }
                 else
                 {
-                    _walls.Remove(wall);
-                    definitelyWalls.Add(wall);
+                    _potentialWalls.Remove(potentialPath);
+                    definitelyWalls.Add(potentialPath);
                 }
             }
 
-            if (mazeSettings.Animate == false)
+            if (!mazeSettings.Animate)
             {
                 animationFrames.Clear();
                 definitelyWalls.Clear();
             }
 
+            // Get Last Frame
             List<Vector2Int> lastWalls = new List<Vector2Int>();
-            for (var xIndex = 0; xIndex < maze.GetLength(0); xIndex++)
+            for (var xIndex = 0; xIndex < mazeData.GetLength(0); xIndex++)
             {
-                for (var yIndex = 0; yIndex < maze.GetLength(1); yIndex++)
+                for (var yIndex = 0; yIndex < mazeData.GetLength(1); yIndex++)
                 {
-                    if (!maze[xIndex, yIndex])
+                    if (!mazeData[xIndex, yIndex])
                     {
                         lastWalls.Add(new Vector2Int(xIndex, yIndex));
                     }
                 }
             }
-
             var deltaLastWalls = lastWalls.Where(x => !definitelyWalls.Contains(x)).ToArray();
-
             animationFrames.Add(new AnimationFrame(startCell, deltaLastWalls));
+
             return animationFrames;
+        }
+
+        private static bool WallsCompletlySurroundPotentialPath(List<Vector2Int> wallsAroundPotentialPath)
+        {
+            return wallsAroundPotentialPath.Count >= 3;
+        }
+
+        private bool AnyWallIsPotentialPath()
+        {
+            return _potentialWalls.Count > 0;
         }
 
         private List<Vector2Int> GetWalls(bool[,] maze, Vector2Int cellToCheck)

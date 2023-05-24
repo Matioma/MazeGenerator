@@ -17,8 +17,8 @@ public class AnimateToggleView : MonoBehaviour
             _mazeSettings = FindObjectOfType<MazeSettings>();
         }
         HandleAnimateStateChange(_mazeSettings.Animate);
-        _mazeSettings.onAnimateChanged.AddListener(HandleAnimateStateChange);
 
+        _mazeSettings.onAnimateChanged.AddListener(HandleAnimateStateChange);
         _toggle.onValueChanged.AddListener(HandleViewToggleChange);
     }
 
