@@ -50,26 +50,21 @@ public class MazeBuilder : MonoBehaviour
         }
         RenderFrame(_indexOffsetRelativeToThePool, _mazePositionEdgeCorner, nextFrame, !nextFrame.isReverse);
     }
+
     private void InitializePool()
     {
         _mazeUnitsPool = new GameObject[MazeSettings.MAX_DIMENSION, MazeSettings.MAX_DIMENSION];
-        for (var x = 0; x < _mazeUnitsPool.GetLength(0); x++)
-        {
-            for (var z = 0; z < _mazeUnitsPool.GetLength(1); z++)
-            {
-                var scale = new Vector3(_mazeSettings.BlockScale, _mazeSettings.BlockScale, _mazeSettings.BlockScale);
-
-                GameObject createdPuzzleUnit = Instantiate(_mazeUnit,Vector3.zero, Quaternion.identity, transform);
-                createdPuzzleUnit.transform.localScale = scale;
-                createdPuzzleUnit.SetActive(false);
-                _mazeUnitsPool[x, z] = createdPuzzleUnit;
-            }
-        }
+        StartCoroutine(FillInThePoolGradually());
     }
     private void RenderFrame(Vector2Int indexOffset, Vector3 mazeStartLocation, AnimationFrame frame, bool isAddingWalls)
     {
         foreach (var wall in frame.Walls)
         {
+            if (_mazeUnitsPool[indexOffset.x + wall.x, indexOffset.y + wall.y] == null)
+            {
+                CreateWall(indexOffset,wall);
+            }
+
             var blockPositionOffset = new Vector3(wall.x * _mazeSettings.BlockScale, 0, wall.y * _mazeSettings.BlockScale);
             _mazeUnitsPool[indexOffset.x + wall.x, indexOffset.y + wall.y].transform.position = mazeStartLocation + blockPositionOffset;
             _mazeUnitsPool[indexOffset.x + wall.x, indexOffset.y + wall.y].SetActive(isAddingWalls);
@@ -77,8 +72,44 @@ public class MazeBuilder : MonoBehaviour
 
         if (frame.Path is Vector2Int cell)
         {
+            if (_mazeUnitsPool[indexOffset.x + cell.x, indexOffset.y + cell.y] == null)
+            {
+                CreateWall(indexOffset, cell);
+            }
+
             _mazeUnitsPool[indexOffset.x + cell.x, indexOffset.y + cell.y].SetActive(!isAddingWalls);
         }
+    }
+
+    private void CreateWall(Vector2Int indexOffset, Vector2Int wall)
+    {
+        var scale = new Vector3(_mazeSettings.BlockScale, _mazeSettings.BlockScale, _mazeSettings.BlockScale);
+
+        GameObject createdPuzzleUnit = Instantiate(_mazeUnit, Vector3.zero, Quaternion.identity, transform);
+        createdPuzzleUnit.transform.localScale = scale;
+        createdPuzzleUnit.SetActive(false);
+        _mazeUnitsPool[indexOffset.x + wall.x, indexOffset.y + wall.y] = createdPuzzleUnit;
+    }
+
+    private IEnumerator FillInThePoolGradually() {
+        for (var x = 0; x < _mazeUnitsPool.GetLength(0); x++)
+        {
+            for (var z = 0; z < _mazeUnitsPool.GetLength(1); z++)
+            {
+                if(_mazeUnitsPool[x, z] != null)
+                {
+                    continue;
+                }
+                var scale = new Vector3(_mazeSettings.BlockScale, _mazeSettings.BlockScale, _mazeSettings.BlockScale);
+
+                GameObject createdPuzzleUnit = Instantiate(_mazeUnit, Vector3.zero, Quaternion.identity, transform);
+                createdPuzzleUnit.transform.localScale = scale;
+                createdPuzzleUnit.SetActive(false);
+                _mazeUnitsPool[x, z] = createdPuzzleUnit;
+            }
+            yield return new WaitForSeconds(0.2f);
+        }
+        
     }
 
     private Vector3 GetMazeStartLocation()
@@ -91,7 +122,7 @@ public class MazeBuilder : MonoBehaviour
     private void HidePool()
     {
         foreach (var puzzleItem in _mazeUnitsPool) {
-            puzzleItem.SetActive(false);
+            puzzleItem?.SetActive(false);
         }
     }
 
