@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -7,7 +9,7 @@ namespace Assets.Scripts
 {
     internal class PrimsMaze : IAnimationGeneration
     {
-        private List<Vector2Int> _potentialWalls = new List<Vector2Int>();
+        private HashSet<Vector2Int> _potentialWalls = new HashSet<Vector2Int>();
 
         public List<AnimationFrame> GetMazeAnimation(MazeSettings mazeSettings)
         {
@@ -16,10 +18,11 @@ namespace Assets.Scripts
 
         private List<AnimationFrame> GenerateMaze(MazeSettings mazeSettings)
         {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             var mazeData = new bool[mazeSettings.Width, mazeSettings.Depth];
             List<AnimationFrame> animationFrames = new List<AnimationFrame>();
-            List<Vector2Int> definitelyWalls = new List<Vector2Int>();
-
+            HashSet<Vector2Int> definitelyWalls = new HashSet<Vector2Int>();
+          
             //Pick start Cell
             int x = Random.Range(1, mazeData.GetLength(0) - 1);
             int z = Random.Range(1, mazeData.GetLength(1) - 1);
@@ -34,7 +37,7 @@ namespace Assets.Scripts
             while (AnyWallIsPotentialPath())
             {
                 var randomWallIndex = Random.Range(0, _potentialWalls.Count);
-                var potentialPath = _potentialWalls[randomWallIndex];
+                var potentialPath = _potentialWalls.ElementAt(randomWallIndex);
 
                 var wallsAroundPotentialPath = GetWalls(mazeData, potentialPath);
                 if (WallsCompletlySurroundPotentialPath(wallsAroundPotentialPath))
@@ -76,6 +79,9 @@ namespace Assets.Scripts
             var deltaLastWalls = lastWalls.Where(x => !definitelyWalls.Contains(x)).ToArray();
             animationFrames.Add(new AnimationFrame(startCell, deltaLastWalls));
 
+            watch.Stop();
+            var elapsedMs = watch.ElapsedMilliseconds;
+            Debug.Log(elapsedMs);
             return animationFrames;
         }
 
