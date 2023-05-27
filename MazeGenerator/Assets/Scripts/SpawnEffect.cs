@@ -1,53 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static System.TimeZoneInfo;
+using UnityEngine.UI;
 
-[RequireComponent(typeof(Animation))]
 public class SpawnEffect : MonoBehaviour
 {
     [SerializeField]
-    private string showTriggerName;
+    private float _startY;
     [SerializeField]
-    private string hideTriggerName;
-
+    private float _TargetY;
     [SerializeField]
-    private AnimationClip animationClip;
-
-    private Animation _animation;
-
-    public void Awake()
-    {
-        _animation = GetComponent<Animation>();
-    }
-
-
-    public void Update() { 
-        if(!_animation.isPlaying) {
-            _animation.enabled = false; 
-        }
-        
-    }
+    private float _animationLength;
 
     public void Show() {
-        _animation.enabled = true;
-        _animation.Play();
-        //GetComponent<Animation>().Play();
-        //GetComponent<Animation>().is
-
-
+       StopAllCoroutines();
+        StartCoroutine(PlayAnimation(_startY, _TargetY, _animationLength));
     }
+    private IEnumerator PlayAnimation(float StartHeight, float TargetHeight, float transitionTime)
+    {
+        float timeElapsed = 0;
+        while (timeElapsed < transitionTime)
+        {
+            var newYPosition = Mathf.Lerp(StartHeight, TargetHeight, timeElapsed / transitionTime);
+            transform.position = new Vector3(transform.position.x, newYPosition, transform.position.z); ;
 
-    public void Hide() {
-        //GetComponent<Animator>().SetTrigger(hideTriggerName);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = new Vector3(transform.position.x, TargetHeight, transform.position.z); ;
     }
 
     public void OnEnable()
     {
         Show();
-    }
-
-    public void OnDisable()
-    {
-        Hide(); 
     }
 }

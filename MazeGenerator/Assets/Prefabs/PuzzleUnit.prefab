@@ -139,7 +139,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1452000405187424659}
   - component: {fileID: 2676111079262907911}
-  - component: {fileID: 5831440808568572087}
   m_Layer: 0
   m_Name: AnimationRoot
   m_TagString: Untagged
@@ -175,21 +174,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05d54da747ca9ec4f811c88e2af0da2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showTriggerName: ShowAnimation
-  hideTriggerName: HideAnimation
-  animationClip: {fileID: 0}
---- !u!111 &5831440808568572087
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7531877068491874079}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: 6add97fb60b94da45b2199d511d67f8e, type: 2}
-  m_Animations: []
-  m_WrapMode: 0
-  m_PlayAutomatically: 0
-  m_AnimatePhysics: 0
-  m_CullingType: 0
+  _startY: -3
+  _TargetY: 0
+  _animationLength: 1
